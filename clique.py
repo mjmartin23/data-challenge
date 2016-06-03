@@ -7,12 +7,13 @@ import matplotlib.pyplot as plt
 
 def main():
 	
-	min_clique_size = 4
-	percent_of_data = 1.0
+	min_clique_size = 5
+	percent_of_data = .2
 
-	data = csv.reader(open('data/newdata.csv'))
+	data = csv.reader(open('data/followings.csv'),delimiter=';')
 	headers = data.next()
-	G = nx.Graph()	
+	G = nx.Graph()
+	G2 = nx.Graph()
 	
 	for entry in data:
 		if random.random() <= percent_of_data:
@@ -31,13 +32,27 @@ def main():
 		    print l
 		    for person in l:
 		    	popular[person] += 1
+		    	for p2 in l:
+		    		if person != p2:
+		    			G2.add_edge(int(person),int(p2))
 	
 	new_pop = sorted(popular.items(), key=operator.itemgetter(1), reverse=True)
+	mostpop = []
 	for pop in new_pop[:len(new_pop)/10]:
 		print "person %d is in %d cliques" % (pop[0],pop[1])
+		mostpop.append(pop[0])
 
-	nx.draw(G)
-	plt.show()	    
+	colorlist = []
+	for node in G.nodes():
+		if node in mostpop:
+			colorlist.append('green')
+		else:
+			colorlist.append('red')
+
+	#nx.draw(G,node_color=colorlist)
+	#plt.show()
+	nx.draw(G2)
+	plt.show()
 
 if __name__ == '__main__':
 	main()
